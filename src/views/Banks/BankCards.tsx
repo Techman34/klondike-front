@@ -77,11 +77,11 @@ const BankCard: React.FC<BankCardProps> = ({ bank }) => {
   return (
     <StyledCardWrapper>
       {bank.depositTokenName.includes('LP') &&
-        (bank.depositTokenName.includes('BAS_DAI') ? (
+        (bank.depositTokenName.includes('Klon_DAI') ? (
           <StyledCardSuperAccent />
         ) : (
-          <StyledCardAccent />
-        ))}
+            <StyledCardAccent />
+          ))}
       <Card>
         <CardContent>
           <StyledContent>

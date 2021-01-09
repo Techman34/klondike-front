@@ -12,7 +12,7 @@ import useHarvestFromBoardroom from '../../../hooks/useHarvestFromBoardroom';
 import useEarningsOnBoardroom from '../../../hooks/useEarningsOnBoardroom';
 import { getDisplayBalance } from '../../../utils/formatBalance';
 
-const Harvest: React.FC = ({}) => {
+const Harvest: React.FC = ({ }) => {
   const { onReward } = useHarvestFromBoardroom();
   const earnings = useEarningsOnBoardroom();
 
@@ -22,10 +22,10 @@ const Harvest: React.FC = ({}) => {
         <StyledCardContentInner>
           <StyledCardHeader>
             <CardIcon>
-              <TokenSymbol symbol="BAC" />
+              <TokenSymbol symbol="KBTC" />
             </CardIcon>
             <Value value={getDisplayBalance(earnings)} />
-            <Label text="Basis Cash Earned" />
+            <Label text="KBTC Earned" />
           </StyledCardHeader>
           <StyledCardActions>
             <Button onClick={onReward} text="Claim Reward" disabled={earnings.eq(0)} />

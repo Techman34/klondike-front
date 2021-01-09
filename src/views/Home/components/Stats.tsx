@@ -34,7 +34,7 @@ const Stats: React.FC<StatsProps> = ({
       <Card>
         <CardContent>
           <StyledStat>
-            <StyledValue>{curPrice ? `$${getDisplayBalance(BigNumber.from(curPrice))}` : '--'}</StyledValue>
+            <StyledValue>{curPrice ? `₿${getDisplayBalance(BigNumber.from(curPrice))}` : '--'}</StyledValue>
             <Label text="Current Price" />
           </StyledStat>
         </CardContent>

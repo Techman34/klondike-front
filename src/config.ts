@@ -4,41 +4,34 @@ import { BankInfo } from './basis-cash';
 import { formatUnits } from 'ethers/lib/utils';
 import { BigNumber } from 'ethers';
 
-const configurations: { [env: string]: Configuration } = {
-  development: {
-    chainId: ChainId.MAINNET,
-    etherscanUrl: 'https://etherscan.io',
-    defaultProvider: 'https://mainnet.infura.io/v3/06ecf536272c43c78adfba29b908a68d',
-    deployments: require('./basis-cash/deployments/deployments.mainnet.json'),
-    externalTokens: {
-      DAI: ['0x6B175474E89094C44Da98b954EedeAC495271d0F', 18],
-      yCRV: ['0xdf5e0e81dff6faf3a7e52ba697820c5e32d806a8', 18],
-      SUSD: ['0x57Ab1E02fEE23774580C119740129eAC7081e9D3', 18],
-      USDC: ['0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6],
-      USDT: ['0xdAC17F958D2ee523a2206206994597C13D831ec7', 6],
-      'BAC_DAI-UNI-LPv2': ['0xd4405F0704621DBe9d4dEA60E128E0C3b26bddbD', 18],
-      'BAS_DAI-UNI-LPv2': ['0x0379dA7a5895D13037B6937b109fA8607a659ADF', 18],
-    },
-    baseLaunchDate: new Date('2020-11-26T00:00:00Z'),
-    bondLaunchesAt: new Date('2020-12-03T15:00:00Z'),
-    boardroomLaunchesAt: new Date('2020-12-11T00:00:00Z'),
-    refreshInterval: 10000,
-    gasLimitMultiplier: 1.1,
+const network = process.env.REACT_APP_NETWORK;
+const defaultProvider = `https://${network}.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
+const chainId = network === "mainnet" ? ChainId.MAINNET : ChainId.KOVAN
+const deployments = require(`./basis-cash/deployments/deployments.${network}.json`);
+const etherscanUrl = `https://${network}.etherscan.io`;
+const devConfig: Configuration = {
+  chainId,
+  etherscanUrl,
+  defaultProvider,
+  deployments,
+  externalTokens: {
+    WBTC: [deployments["WBTC"].address, 8],
+    RenBTC: [deployments["RenBTC"].address, 8],
+    TBTC: [deployments["TBTC"].address, 18],
+    'KBTC_WBTC-UNI-LPv2': ['0x262Fd20639Fd7749AfeB2277d76EB8715223f8c4', 18],
+    'Klon_WBTC-UNI-LPv2': ['0xC82822893A1B6db8433369F2528AEA686A49701D', 18],
   },
+  baseLaunchDate: new Date('2020-11-26T00:00:00Z'),
+  bondLaunchesAt: new Date('2020-12-03T15:00:00Z'),
+  boardroomLaunchesAt: new Date('2020-12-11T00:00:00Z'),
+  refreshInterval: 10000,
+  gasLimitMultiplier: 1.1,
+};
+
+const configurations: { [env: string]: Configuration } = {
+  development: devConfig,
   production: {
-    chainId: ChainId.MAINNET,
-    etherscanUrl: 'https://etherscan.io',
-    defaultProvider: 'https://mainnet.infura.io/v3/06ecf536272c43c78adfba29b908a68d',
-    deployments: require('./basis-cash/deployments/deployments.mainnet.json'),
-    externalTokens: {
-      DAI: ['0x6B175474E89094C44Da98b954EedeAC495271d0F', 18],
-      yCRV: ['0xdf5e0e81dff6faf3a7e52ba697820c5e32d806a8', 18],
-      SUSD: ['0x57Ab1E02fEE23774580C119740129eAC7081e9D3', 18],
-      USDC: ['0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6],
-      USDT: ['0xdAC17F958D2ee523a2206206994597C13D831ec7', 6],
-      'BAC_DAI-UNI-LPv2': ['0xd4405F0704621DBe9d4dEA60E128E0C3b26bddbD', 18],
-      'BAS_DAI-UNI-LPv2': ['0x0379dA7a5895D13037B6937b109fA8607a659ADF', 18],
-    },
+    ...devConfig,
     baseLaunchDate: new Date('2020-11-29T23:00:00Z'),
     bondLaunchesAt: new Date('2020-12-05T00:00:00Z'),
     boardroomLaunchesAt: new Date('2020-12-11T00:00:00Z'),
@@ -48,59 +41,44 @@ const configurations: { [env: string]: Configuration } = {
 };
 
 export const bankDefinitions: { [contractName: string]: BankInfo } = {
-  BACDAIPool: {
-    name: 'Earn BAC by DAI',
-    contract: 'BACDAIPool',
-    depositTokenName: 'DAI',
-    earnTokenName: 'BAC',
-    finished: true,
+  KBTCWBTCPool: {
+    name: 'Earn KBTC by Wrapped BTC',
+    contract: 'KBTCWBTCPool',
+    depositTokenName: 'WBTC',
+    earnTokenName: 'KBTC',
+    finished: false,
     sort: 3,
   },
-  BACUSDCPool: {
-    name: 'Earn BAC by USDC',
-    contract: 'BACUSDCPool',
-    depositTokenName: 'USDC',
-    earnTokenName: 'BAC',
-    finished: true,
+  KBTCRenBTCPool: {
+    name: 'Earn KBTC by RenBTC',
+    contract: 'KBTCRenBTCPool',
+    depositTokenName: 'WBTC',
+    earnTokenName: 'RenBTC',
+    finished: false,
     sort: 4,
   },
-  BACSUSDPool: {
-    name: 'Earn BAC by sUSD',
-    contract: 'BACSUSDPool',
-    depositTokenName: 'SUSD',
-    earnTokenName: 'BAC',
-    finished: true,
+  KBTCTBTCPool: {
+    name: 'Earn KBTC by TBTC',
+    contract: 'KBTCTBTCPool',
+    depositTokenName: 'TBTC',
+    earnTokenName: 'KBTC',
+    finished: false,
     sort: 5,
   },
-  BACUSDTPool: {
-    name: 'Earn BAC by USDT',
-    contract: 'BACUSDTPool',
-    depositTokenName: 'USDT',
-    earnTokenName: 'BAC',
-    finished: true,
-    sort: 6,
-  },
-  BACyCRVPool: {
-    name: 'Earn BAC by yCRV',
-    contract: 'BACyCRVPool',
-    depositTokenName: 'yCRV',
-    earnTokenName: 'BAC',
-    finished: true,
-    sort: 7,
-  },
-  DAIBACLPTokenSharePool: {
-    name: 'Earn BAS by BAC-DAI-LP',
-    contract: 'DAIBACLPTokenSharePool',
-    depositTokenName: 'BAC_DAI-UNI-LPv2',
-    earnTokenName: 'BAS',
+
+  WBTCKBTCLPTokenKlonPool: {
+    name: 'Earn Klon by KBTC-WBTC-LP',
+    contract: 'WBTCKBTCLPTokenKlonPool',
+    depositTokenName: 'Klon_WBTC-UNI-LPv2',
+    earnTokenName: 'Klon',
     finished: false,
     sort: 1,
   },
-  DAIBASLPTokenSharePool: {
-    name: 'Earn BAS by BAS-DAI-LP',
-    contract: 'DAIBASLPTokenSharePool',
-    depositTokenName: 'BAS_DAI-UNI-LPv2',
-    earnTokenName: 'BAS',
+  WBTCKLONLPTokenKlonPool: {
+    name: 'Earn Klon by Klon-WBTC-LP',
+    contract: 'WBTCKLONLPTokenKlonPool',
+    depositTokenName: 'Klon_WBTC-UNI-LPv2',
+    earnTokenName: 'Klon',
     finished: false,
     sort: 2,
   },

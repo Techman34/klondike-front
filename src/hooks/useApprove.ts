@@ -5,7 +5,7 @@ import useAllowance from './useAllowance';
 import ERC20 from '../basis-cash/ERC20';
 
 const APPROVE_AMOUNT = ethers.constants.MaxUint256;
-const APPROVE_BASE_AMOUNT = BigNumber.from('1000000000000000000000000');
+const APPROVE_KlonE_AMOUNT = BigNumber.from('1000000000000000000000000');
 
 export enum ApprovalState {
   UNKNOWN,
@@ -25,7 +25,7 @@ function useApprove(token: ERC20, spender: string): [ApprovalState, () => Promis
     if (!currentAllowance) return ApprovalState.UNKNOWN;
 
     // amountToApprove will be defined if currentAllowance is
-    return currentAllowance.lt(APPROVE_BASE_AMOUNT)
+    return currentAllowance.lt(APPROVE_KlonE_AMOUNT)
       ? pendingApproval
         ? ApprovalState.PENDING
         : ApprovalState.NOT_APPROVED

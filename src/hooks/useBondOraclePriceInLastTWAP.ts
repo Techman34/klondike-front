@@ -8,11 +8,12 @@ const useBondOraclePriceInLastTWAP = () => {
   const basisCash = useBasisCash();
 
   const fetchCashPrice = useCallback(async () => {
-    setPrice(await basisCash.getBondOraclePriceInLastTWAP());
+    const price = await basisCash.getKbondOraclePriceInLastTWAP();
+    setPrice(price);
   }, [basisCash]);
 
   useEffect(() => {
-    fetchCashPrice().catch((err) => console.error(`Failed to fetch BAB price: ${err.stack}`));
+    fetchCashPrice().catch((err) => console.error(`Failed to fetch KBond price: ${err.stack}`));
     const refreshInterval = setInterval(fetchCashPrice, config.refreshInterval);
     return () => clearInterval(refreshInterval);
   }, [setPrice, basisCash]);

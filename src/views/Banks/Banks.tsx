@@ -19,15 +19,15 @@ const Banks: React.FC = () => {
           <PageHeader
             icon={'🏦'}
             title="Pick a Bank."
-            subtitle="Earn Basis Shares by providing liquidity"
+            subtitle="Earn Klons by providing liquidity"
           />
           {!!account ? (
             <BankCards />
           ) : (
-            <Center>
-              <Button onClick={() => connect('injected')} text="Unlock Wallet" />
-            </Center>
-          )}
+              <Center>
+                <Button onClick={() => connect('injected')} text="Unlock Wallet" />
+              </Center>
+            )}
         </Route>
         <Route path={`${path}/:bankId`}>
           <Bank />

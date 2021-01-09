@@ -31,22 +31,22 @@ const Home: React.FC = () => {
     }
   }, [basisCash]);
 
-  const cashAddr = useMemo(() => basisCash?.BAC.address, [basisCash]);
-  const shareAddr = useMemo(() => basisCash?.BAS.address, [basisCash]);
-  const bondAddr = useMemo(() => basisCash?.BAB.address, [basisCash]);
+  const cashAddr = useMemo(() => basisCash?.KBTC.address, [basisCash]);
+  const shareAddr = useMemo(() => basisCash?.Klon.address, [basisCash]);
+  const bondAddr = useMemo(() => basisCash?.KBond.address, [basisCash]);
 
   return (
     <Page>
       <PageHeader
         icon="👋"
-        subtitle="Buy, sell, and provide liquidity for Basis Cash and Basis Shares on Uniswap"
-        title="Welcome to Basis Cash!"
+        subtitle="Buy, sell, and provide liquidity for KBTC and Klons on Uniswap"
+        title="Welcome to Klondike finance!"
       />
       <Spacer size="md" />
       <CardWrapper>
         <HomeCard
-          title="Basis Cash"
-          symbol="BAC"
+          title="KBTC"
+          symbol="KBTC"
           color="#EEA7ED"
           supplyLabel="Circulating Supply"
           address={cashAddr}
@@ -54,16 +54,16 @@ const Home: React.FC = () => {
         />
         <Spacer size="lg" />
         <HomeCard
-          title="Basis Share"
-          symbol="BAS"
+          title="Klon"
+          symbol="Klon"
           color="#E83725"
           address={shareAddr}
           stat={share}
         />
         <Spacer size="lg" />
         <HomeCard
-          title="Basis Bond"
-          symbol="BAB"
+          title="KBond"
+          symbol="KBond"
           color="#ECF25C"
           address={bondAddr}
           stat={bond}

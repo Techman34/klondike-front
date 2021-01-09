@@ -27,14 +27,14 @@ const Bond: React.FC = () => {
   const bondStat = useBondStats();
   const cashPrice = useBondOraclePriceInLastTWAP();
 
-  const bondBalance = useTokenBalance(basisCash?.BAB);
+  const bondBalance = useTokenBalance(basisCash?.KBond);
 
   const handleBuyBonds = useCallback(
     async (amount: string) => {
-      const tx = await basisCash.buyBonds(amount);
-      const bondAmount = Number(amount) / Number(getDisplayBalance(cashPrice));
+      const tx = await basisCash.buyKbonds(amount);
+      const bondAmount = Number(amount) / Number(getDisplayBalance(cashPrice, 8));
       addTransaction(tx, {
-        summary: `Buy ${bondAmount.toFixed(2)} BAB with ${amount} BAC`,
+        summary: `Buy ${bondAmount.toFixed(2)} KBond with ${amount} KBTC`,
       });
     },
     [basisCash, addTransaction, cashPrice],
@@ -42,8 +42,8 @@ const Bond: React.FC = () => {
 
   const handleRedeemBonds = useCallback(
     async (amount: string) => {
-      const tx = await basisCash.redeemBonds(amount);
-      addTransaction(tx, { summary: `Redeem ${amount} BAB` });
+      const tx = await basisCash.redeemKbonds(amount);
+      addTransaction(tx, { summary: `Redeem ${amount} KBond` });
     },
     [basisCash, addTransaction],
   );
@@ -57,18 +57,19 @@ const Bond: React.FC = () => {
         <Page>
           <PageHeader
             icon={'🏦'}
-            title="Buy & Redeem Bonds"
+            title="Buy & Redeem KBonds"
             subtitle="Earn premiums upon redemption"
           />
           <LaunchCountdown
             deadline={config.bondLaunchesAt}
-            description="How does Basis bond work?"
+            description="How does KBond work?"
             descriptionLink="https://docs.basis.cash/mechanisms/stabilization-mechanism"
           />
         </Page>
       </Switch>
     );
   }
+
   return (
     <Switch>
       <Page>
@@ -77,7 +78,7 @@ const Bond: React.FC = () => {
             <Route exact path={path}>
               <PageHeader
                 icon={'🏦'}
-                title="Buy & Redeem Bonds"
+                title="Buy & Redeem KBonds"
                 subtitle="Earn premiums upon redemption"
               />
             </Route>
@@ -85,16 +86,16 @@ const Bond: React.FC = () => {
               <StyledCardWrapper>
                 <ExchangeCard
                   action="Purchase"
-                  fromToken={basisCash.BAC}
-                  fromTokenName="Basis Cash"
-                  toToken={basisCash.BAB}
-                  toTokenName="Basis Bond"
+                  fromToken={basisCash.KBTC}
+                  fromTokenName="KBTC"
+                  toToken={basisCash.KBond}
+                  toTokenName="KBond"
                   priceDesc={
                     !isBondPurchasable
-                      ? 'BAC is over $1'
+                      ? 'KBTC is over $1'
                       : `${Math.floor(
-                          100 / Number(bondStat.priceInDAI) - 100,
-                        )}% return when BAC > $1`
+                        100 / Number(bondStat.priceInDAI) - 100,
+                      )}% return when KBTC > $1`
                   }
                   onExchange={handleBuyBonds}
                   disabled={!bondStat || isBondRedeemable}
@@ -102,44 +103,44 @@ const Bond: React.FC = () => {
               </StyledCardWrapper>
               <StyledStatsWrapper>
                 <ExchangeStat
-                  tokenName="BAC"
+                  tokenName="KBTC"
                   description="Last-Hour TWAP Price"
-                  price={getDisplayBalance(cashPrice, 18, 2)}
+                  price={getDisplayBalance(cashPrice, 8, 2)}
                 />
                 <Spacer size="md" />
                 <ExchangeStat
-                  tokenName="BAB"
-                  description="Current Price: (BAC)^2"
+                  tokenName="KBond"
+                  description="Current Price: (KBTC)^2"
                   price={bondStat?.priceInDAI || '-'}
                 />
               </StyledStatsWrapper>
               <StyledCardWrapper>
                 <ExchangeCard
                   action="Redeem"
-                  fromToken={basisCash.BAB}
-                  fromTokenName="Basis Bond"
-                  toToken={basisCash.BAC}
-                  toTokenName="Basis Cash"
-                  priceDesc={`${getDisplayBalance(bondBalance)} BAB Available`}
+                  fromToken={basisCash.KBond}
+                  fromTokenName="KBond"
+                  toToken={basisCash.KBTC}
+                  toTokenName="KBTC"
+                  priceDesc={`${getDisplayBalance(bondBalance)} KBond Available`}
                   onExchange={handleRedeemBonds}
                   disabled={!bondStat || bondBalance.eq(0) || !isBondRedeemable}
-                  disabledDescription={!isBondRedeemable ? `Enabled when BAC > $${BOND_REDEEM_PRICE}` : null}
+                  disabledDescription={!isBondRedeemable ? `Enabled when KBTC > $${BOND_REDEEM_PRICE}` : null}
                 />
               </StyledCardWrapper>
             </StyledBond>
           </>
         ) : (
-          <div
-            style={{
-              alignItems: 'center',
-              display: 'flex',
-              flex: 1,
-              justifyContent: 'center',
-            }}
-          >
-            <Button onClick={() => connect('injected')} text="Unlock Wallet" />
-          </div>
-        )}
+            <div
+              style={{
+                alignItems: 'center',
+                display: 'flex',
+                flex: 1,
+                justifyContent: 'center',
+              }}
+            >
+              <Button onClick={() => connect('injected')} text="Unlock Wallet" />
+            </div>
+          )}
       </Page>
     </Switch>
   );

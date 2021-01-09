@@ -1,6 +1,6 @@
-![Basis Cash Title Image](https://raw.githubusercontent.com/Basis-Cash/basiscash-protocol/master/assets/bg.jpeg)
+![Klondike Finance Title Image](https://raw.githubusercontent.com/Basis-Cash/basiscash-protocol/master/assets/bg.jpeg)
 
-# Basis Cash  Interface
+# Klondike Finance  Interface
 
 This is front-end repository of the [basis.cash](https://basis.cash/).
 

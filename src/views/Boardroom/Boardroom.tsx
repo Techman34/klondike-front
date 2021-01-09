@@ -32,6 +32,7 @@ const Boardroom: React.FC = () => {
   const stakedBalance = useStakedBalanceOnBoardroom();
 
   const cashStat = useCashPriceInEstimatedTWAP();
+
   const treasuryAmount = useTreasuryAmount();
   const scalingFactor = useMemo(
     () => (cashStat ? Number(cashStat.priceInDAI).toFixed(2) : null),
@@ -59,7 +60,7 @@ const Boardroom: React.FC = () => {
             <br />
             The boardroom upgrade was successful. Please settle and withdraw your stake from the
             legacy boardroom, then stake again on the new boardroom contract{' '}
-            <b>to continue earning BAC seigniorage.</b>
+            <b>to continue earning KBTC seigniorage.</b>
           </Notice>
         </StyledNoticeWrapper>
       );
@@ -75,7 +76,7 @@ const Boardroom: React.FC = () => {
           <PageHeader
             icon={'🤝'}
             title="Join the Boardroom"
-            subtitle="Deposit Basis Shares and earn inflationary rewards"
+            subtitle="Deposit Klons and earn inflationary rewards"
           />
           <LaunchCountdown
             deadline={config.boardroomLaunchesAt}
@@ -95,7 +96,7 @@ const Boardroom: React.FC = () => {
             <PageHeader
               icon={'🤝'}
               title="Join the Boardroom"
-              subtitle="Deposit Basis Shares and earn inflationary rewards"
+              subtitle="Deposit Klons and earn inflationary rewards"
             />
             {migrateNotice}
             <StyledHeader>
@@ -106,8 +107,8 @@ const Boardroom: React.FC = () => {
               />
               <Stat
                 icon="💵"
-                title={cashStat ? `$${cashStat.priceInDAI}` : '-'}
-                description="BAC Price (TWAP)"
+                title={cashStat ? `₿${cashStat.priceInDAI}` : '-'}
+                description="KBTC Price (TWAP)"
               />
               <Stat
                 icon="🚀"
@@ -151,8 +152,8 @@ const Boardroom: React.FC = () => {
             </StyledBoardroom>
           </>
         ) : (
-          <UnlockWallet />
-        )}
+            <UnlockWallet />
+          )}
       </Page>
     </Switch>
   );

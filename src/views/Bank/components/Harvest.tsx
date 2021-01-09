@@ -25,7 +25,7 @@ const Harvest: React.FC<HarvestProps> = ({ bank }) => {
   const earnings = useEarnings(bank.contract);
   const { onReward } = useHarvest(bank);
 
-  const tokenName = bank.earnTokenName === 'BAS' ? 'Share' : 'Cash';
+  const tokenName = bank.earnTokenName === 'Klon' ? 'Share' : 'Cash';
   return (
     <Card>
       <CardContent>
@@ -38,7 +38,7 @@ const Harvest: React.FC<HarvestProps> = ({ bank }) => {
             <Label text={`Basis ${tokenName} Earned`} />
           </StyledCardHeader>
           <StyledCardActions>
-            <Button onClick={onReward} disabled={earnings.eq(0)} text="Settle"  />
+            <Button onClick={onReward} disabled={earnings.eq(0)} text="Settle" />
           </StyledCardActions>
         </StyledCardContentInner>
       </CardContent>

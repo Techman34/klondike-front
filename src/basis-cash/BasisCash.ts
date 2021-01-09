@@ -10,7 +10,7 @@ import { getDefaultProvider } from '../utils/provider';
 import IUniswapV2PairABI from './IUniswapV2Pair.abi.json';
 
 /**
- * An API module of Basis Cash contracts.
+ * An API module of KBTC contracts.
  * All contract-interacting domain logic should be defined in here.
  */
 export class BasisCash {
@@ -23,9 +23,9 @@ export class BasisCash {
   boardroomVersionOfUser?: string;
 
   bacDai: Contract;
-  BAC: ERC20;
-  BAS: ERC20;
-  BAB: ERC20;
+  KBTC: ERC20;
+  Klon: ERC20;
+  KBond: ERC20;
 
   constructor(cfg: Configuration) {
     const { deployments, externalTokens } = cfg;
@@ -40,13 +40,13 @@ export class BasisCash {
     for (const [symbol, [address, decimal]] of Object.entries(externalTokens)) {
       this.externalTokens[symbol] = new ERC20(address, provider, symbol, decimal); // TODO: add decimal
     }
-    this.BAC = new ERC20(deployments.Cash.address, provider, 'BAC');
-    this.BAS = new ERC20(deployments.Share.address, provider, 'BAS');
-    this.BAB = new ERC20(deployments.Bond.address, provider, 'BAB');
+    this.KBTC = new ERC20(deployments.KBTC.address, provider, 'KBTC');
+    this.Klon = new ERC20(deployments.Klon.address, provider, 'Klon');
+    this.KBond = new ERC20(deployments.Kbond.address, provider, 'KBond');
 
     // Uniswap V2 Pair
     this.bacDai = new Contract(
-      externalTokens['BAC_DAI-UNI-LPv2'][0],
+      externalTokens['KBTC_WBTC-UNI-LPv2'][0],
       IUniswapV2PairABI,
       provider,
     );
@@ -67,7 +67,7 @@ export class BasisCash {
     for (const [name, contract] of Object.entries(this.contracts)) {
       this.contracts[name] = contract.connect(this.signer);
     }
-    const tokens = [this.BAC, this.BAS, this.BAB, ...Object.values(this.externalTokens)];
+    const tokens = [this.KBTC, this.Klon, this.KBond, ...Object.values(this.externalTokens)];
     for (const token of tokens) {
       token.connect(this.signer);
     }
@@ -94,45 +94,51 @@ export class BasisCash {
   }
 
   /**
-   * @returns Basis Cash (BAC) stats from Uniswap.
-   * It may differ from the BAC price used on Treasury (which is calculated in TWAP)
+   * @returns KBTC (KBTC) stats from Uniswap.
+   * It may differ from the KBTC price used on Treasury (which is calculated in TWAP)
    */
   async getCashStatFromUniswap(): Promise<TokenStat> {
-    const supply = await this.BAC.displayedTotalSupply();
+    const supply = await this.KBTC.displayedTotalSupply();
     return {
-      priceInDAI: await this.getTokenPriceFromUniswap(this.BAC),
+      priceInDAI: await this.getTokenPriceFromUniswap(this.KBTC),
       totalSupply: supply,
     };
   }
 
   /**
-   * @returns Estimated Basis Cash (BAC) price data,
+   * @returns Estimated KBTC (KBTC) price data,
    * calculated by 1-day Time-Weight Averaged Price (TWAP).
    */
   async getCashStatInEstimatedTWAP(): Promise<TokenStat> {
     const { Oracle } = this.contracts;
 
-    const totalSupply = await this.BAC.displayedTotalSupply();
-
+    const totalSupply = await this.KBTC.displayedTotalSupply();
+    const wbtcAddress = this.config.deployments["WBTC"].address;
+    const kbtcAddress = this.config.deployments["KBTC"].address;
+    const num = BigNumber.from(wbtcAddress).lt(BigNumber.from(kbtcAddress)) ? 1 : 0;
+    const priceCumulativeLast = `price${num}CumulativeLast`;
+    const priceAverage = `price${num}Average`;
     // estimate current TWAP price
-    const cumulativePrice: BigNumber = await this.bacDai.price0CumulativeLast();
-    const cumulativePriceLast = await Oracle.price0CumulativeLast();
-
+    const cumulativePrice: BigNumber = await this.bacDai[priceCumulativeLast]();
+    const cumulativePriceLast = await Oracle[priceCumulativeLast]();
     const denominator112 = BigNumber.from(2).pow(112);
+    const denominator1e8 = BigNumber.from(10).pow(8);
     const denominator1e18 = BigNumber.from(10).pow(18);
-
-    if (cumulativePrice.toString() === cumulativePriceLast.toString()) {
-      const oldTWAPOracle = await Oracle.price0Average();
-      const cashPriceTWAPOld = oldTWAPOracle.mul(denominator1e18).div(denominator112);
-      return {
-        priceInDAI: getDisplayBalance(cashPriceTWAPOld),
-        totalSupply,
-      };
-    }
 
     const bacDaiReserves = await this.bacDai.getReserves();
     const blockTimestampLastUniswap = BigNumber.from(bacDaiReserves[2]);
     const elapsedSec = blockTimestampLastUniswap.sub(await Oracle.blockTimestampLast());
+
+    // if (cumulativePrice.toString() === cumulativePriceLast.toString()) {
+    // Oracle was updated after last trade
+    if (elapsedSec.lte(0)) {
+      const oldTWAPOracle = await Oracle[priceAverage]();
+      const cashPriceTWAPOld = oldTWAPOracle.mul(denominator1e18).div(denominator112);
+      return {
+        priceInDAI: getDisplayBalance(cashPriceTWAPOld, 8),
+        totalSupply,
+      };
+    }
 
     const cashPriceTWAP = cumulativePrice
       .sub(cumulativePriceLast)
@@ -141,7 +147,7 @@ export class BasisCash {
       .div(denominator112);
 
     return {
-      priceInDAI: getDisplayBalance(cashPriceTWAP),
+      priceInDAI: getDisplayBalance(cashPriceTWAP, 8),
       totalSupply,
     };
   }
@@ -151,27 +157,27 @@ export class BasisCash {
     return Treasury.getSeigniorageOraclePrice();
   }
 
-  async getBondOraclePriceInLastTWAP(): Promise<BigNumber> {
+  async getKbondOraclePriceInLastTWAP(): Promise<BigNumber> {
     const { Treasury } = this.contracts;
-    return Treasury.getBondOraclePrice();
+    return Treasury.getKbondOraclePrice();
   }
 
   async getBondStat(): Promise<TokenStat> {
-    const decimals = BigNumber.from(10).pow(18);
+    const decimals = BigNumber.from(10).pow(this.config.externalTokens.WBTC[1]);
 
-    const cashPrice: BigNumber = await this.getBondOraclePriceInLastTWAP();
+    const cashPrice: BigNumber = await this.getKbondOraclePriceInLastTWAP();
     const bondPrice = cashPrice.pow(2).div(decimals);
 
     return {
-      priceInDAI: getDisplayBalance(bondPrice),
-      totalSupply: await this.BAB.displayedTotalSupply(),
+      priceInDAI: getDisplayBalance(bondPrice, this.config.externalTokens.WBTC[1]),
+      totalSupply: await this.KBond.displayedTotalSupply(),
     };
   }
 
   async getShareStat(): Promise<TokenStat> {
     return {
-      priceInDAI: await this.getTokenPriceFromUniswap(this.BAS),
-      totalSupply: await this.BAS.displayedTotalSupply(),
+      priceInDAI: await this.getTokenPriceFromUniswap(this.Klon),
+      totalSupply: await this.Klon.displayedTotalSupply(),
     };
   }
 
@@ -179,15 +185,15 @@ export class BasisCash {
     await this.provider.ready;
 
     const { chainId } = this.config;
-    const { DAI } = this.config.externalTokens;
+    const { WBTC } = this.config.externalTokens;
 
-    const dai = new Token(chainId, DAI[0], 18);
+    const wbtc = new Token(chainId, WBTC[0], 8);
     const token = new Token(chainId, tokenContract.address, 18);
 
     try {
-      const daiToToken = await Fetcher.fetchPairData(dai, token, this.provider);
-      const priceInDAI = new Route([daiToToken], token);
-      return priceInDAI.midPrice.toSignificant(3);
+      const wbtcToToken = await Fetcher.fetchPairData(wbtc, token, this.provider);
+      const priceInWBTC = new Route([wbtcToToken], token);
+      return priceInWBTC.midPrice.toSignificant(3);
     } catch (err) {
       console.error(`Failed to fetch token price of ${tokenContract.symbol}: ${err}`);
     }
@@ -197,18 +203,18 @@ export class BasisCash {
    * Buy bonds with cash.
    * @param amount amount of cash to purchase bonds with.
    */
-  async buyBonds(amount: string | number): Promise<TransactionResponse> {
+  async buyKbonds(amount: string | number): Promise<TransactionResponse> {
     const { Treasury } = this.contracts;
-    return await Treasury.buyBonds(decimalToBalance(amount), await this.getBondOraclePriceInLastTWAP());
+    return await Treasury.buyKbonds(decimalToBalance(amount), await this.getKbondOraclePriceInLastTWAP());
   }
 
   /**
    * Redeem bonds for cash.
    * @param amount amount of bonds to redeem.
    */
-  async redeemBonds(amount: string): Promise<TransactionResponse> {
+  async redeemKbonds(amount: string): Promise<TransactionResponse> {
     const { Treasury } = this.contracts;
-    return await Treasury.redeemBonds(decimalToBalance(amount), await this.getBondOraclePriceInLastTWAP());
+    return await Treasury.redeemKbonds(decimalToBalance(amount), await this.getKbondOraclePriceInLastTWAP());
   }
 
   async earnedFromBank(poolName: ContractName, account = this.myAccount): Promise<BigNumber> {
@@ -277,32 +283,32 @@ export class BasisCash {
   }
 
   async fetchBoardroomVersionOfUser(): Promise<string> {
-    const { Boardroom1, Boardroom2 } = this.contracts;
-    const balance1 = await Boardroom1.getShareOf(this.myAccount);
-    if (balance1.gt(0)) {
-      console.log(
-        `👀 The user is using Boardroom v1. (Staked ${getDisplayBalance(balance1)} BAS)`,
-      );
-      return 'v1';
-    }
-    const balance2 = await Boardroom2.balanceOf(this.myAccount);
-    if (balance2.gt(0)) {
-      console.log(
-        `👀 The user is using Boardroom v2. (Staked ${getDisplayBalance(balance2)} BAS)`,
-      );
-      return 'v2';
-    }
+    // const { Boardroom1, Boardroom2 } = this.contracts;
+    // const balance1 = await Boardroom1.getShareOf(this.myAccount);
+    // if (balance1.gt(0)) {
+    //   console.log(
+    //     `👀 The user is using Boardroom v1. (Staked ${getDisplayBalance(balance1)} Klon)`,
+    //   );
+    //   return 'v1';
+    // }
+    // const balance2 = await Boardroom2.balanceOf(this.myAccount);
+    // if (balance2.gt(0)) {
+    //   console.log(
+    //     `👀 The user is using Boardroom v2. (Staked ${getDisplayBalance(balance2)} Klon)`,
+    //   );
+    //   return 'v2';
+    // }
     return 'latest';
   }
 
   boardroomByVersion(version: string): Contract {
     if (version === 'v1') {
-      return this.contracts.Boardroom1;
+      return this.contracts.Boardroom;
     }
     if (version === 'v2') {
-      return this.contracts.Boardroom2;
+      return this.contracts.Boardroom;
     }
-    return this.contracts.Boardroom3;
+    return this.contracts.Boardroom;
   }
 
   currentBoardroom(): Contract {
@@ -318,7 +324,7 @@ export class BasisCash {
 
   async stakeShareToBoardroom(amount: string): Promise<TransactionResponse> {
     if (this.isOldBoardroomMember()) {
-      throw new Error("you're using old Boardroom. please withdraw and deposit the BAS again.");
+      throw new Error("you're using old Boardroom. please withdraw and deposit the Klon again.");
     }
     const Boardroom = this.currentBoardroom();
     return await Boardroom.stake(decimalToBalance(amount));

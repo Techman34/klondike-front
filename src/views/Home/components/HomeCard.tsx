@@ -32,10 +32,10 @@ const HomeCard: React.FC<HomeCardProps> = ({
         <TokenSymbol symbol={symbol} />
         <CardSection>
           {stat ? (
-            <StyledValue>{(stat.priceInDAI !== '-' ? '$' : '') + stat.priceInDAI}</StyledValue>
+            <StyledValue>{(stat.priceInDAI !== '-' ? '₿' : '') + stat.priceInDAI}</StyledValue>
           ) : (
-            <ValueSkeleton />
-          )}
+              <ValueSkeleton />
+            )}
           <Label text="Current Price" color={color} />
         </CardSection>
 

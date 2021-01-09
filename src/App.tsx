@@ -30,7 +30,7 @@ const App: React.FC = () => {
           <Route path="/bank">
             <Banks />
           </Route>
-          <Route path="/bonds">
+          <Route path="/kbonds">
             <Bond />
           </Route>
           <Route path="/boardroom">
