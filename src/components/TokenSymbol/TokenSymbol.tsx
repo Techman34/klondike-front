@@ -12,8 +12,8 @@ const logosBySymbol: { [title: string]: string } = {
   'WBTC': wbtcLogo,
   'TBTC': wbtcLogo,
   'RenBTC': wbtcLogo,
-  'KBTC_WBTC-UNI-LPv2': bacLogo,
-  'Klon_WBTC-UNI-LPv2': basLogo,
+  'KBTC_WBTC-LPv2': bacLogo,
+  'Klon_WBTC-LPv2': basLogo,
 };
 
 type BasisLogoProps = {

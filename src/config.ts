@@ -18,8 +18,8 @@ const devConfig: Configuration = {
     WBTC: [deployments["WBTC"].address, 8],
     RenBTC: [deployments["RenBTC"].address, 8],
     TBTC: [deployments["TBTC"].address, 18],
-    'KBTC_WBTC-UNI-LPv2': ['0x262Fd20639Fd7749AfeB2277d76EB8715223f8c4', 18],
-    'Klon_WBTC-UNI-LPv2': ['0xC82822893A1B6db8433369F2528AEA686A49701D', 18],
+    'KBTC_WBTC-LPv2': ['0x262Fd20639Fd7749AfeB2277d76EB8715223f8c4', 18],
+    'Klon_WBTC-LPv2': ['0xC82822893A1B6db8433369F2528AEA686A49701D', 18],
   },
   baseLaunchDate: new Date('2020-11-26T00:00:00Z'),
   bondLaunchesAt: new Date('2020-12-03T15:00:00Z'),
@@ -69,7 +69,7 @@ export const bankDefinitions: { [contractName: string]: BankInfo } = {
   WBTCKBTCLPTokenKlonPool: {
     name: 'Earn Klon by KBTC-WBTC-LP',
     contract: 'WBTCKBTCLPTokenKlonPool',
-    depositTokenName: 'Klon_WBTC-UNI-LPv2',
+    depositTokenName: 'KBTC_WBTC-LPv2',
     earnTokenName: 'Klon',
     finished: false,
     sort: 1,
@@ -77,7 +77,7 @@ export const bankDefinitions: { [contractName: string]: BankInfo } = {
   WBTCKLONLPTokenKlonPool: {
     name: 'Earn Klon by Klon-WBTC-LP',
     contract: 'WBTCKLONLPTokenKlonPool',
-    depositTokenName: 'Klon_WBTC-UNI-LPv2',
+    depositTokenName: 'Klon_WBTC-LPv2',
     earnTokenName: 'Klon',
     finished: false,
     sort: 2,

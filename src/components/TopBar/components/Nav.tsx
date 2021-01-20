@@ -9,7 +9,7 @@ const Nav: React.FC = () => {
       <StyledLink exact activeClassName="active" to="/bank">Bank</StyledLink>
       <StyledLink exact activeClassName="active" to="/kbonds">KBonds</StyledLink>
       <StyledLink exact activeClassName="active" to="/boardroom">Boardroom</StyledLink>
-      <StyledLink2 href="https://snapshot.page/#/basiscash.eth" target="_blank" >Vote</StyledLink2>
+      <StyledLink2 href="#" target="_blank" >Vote</StyledLink2>
     </StyledNav>
   )
 }
@@ -33,7 +33,9 @@ const StyledLink = styled(NavLink)`
   }
 `
 const StyledLink2 = styled.a`
-  color: ${props => props.theme.color.grey[400]};
+  pointer-events: none;
+  cursor: default;
+  color: ${props => props.theme.color.grey[600]};
   font-weight: 700;
   padding-left: ${props => props.theme.spacing[3]}px;
   padding-right: ${props => props.theme.spacing[3]}px;

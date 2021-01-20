@@ -182,8 +182,9 @@ const StyledRow = styled.div`
 
 const StyledCardWrapper = styled.div`
   display: flex;
-  width: calc((900px - ${(props) => props.theme.spacing[4]}px * 2) / 3);
+  width: calc((850px - ${(props) => props.theme.spacing[4]}px * 2) / 3);
   position: relative;
+  margin 2rem 0;
 `;
 
 const StyledTitle = styled.h4`
