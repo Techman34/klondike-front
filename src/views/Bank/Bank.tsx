@@ -12,6 +12,7 @@ import Stake from './components/Stake';
 import useBank from '../../hooks/useBank';
 import useRedeem from '../../hooks/useRedeem';
 import { Bank as BankEntity } from '../../basis-cash';
+import config from '../../config';
 
 const Bank: React.FC = () => {
   useEffect(() => window.scrollTo(0, 0));
@@ -59,11 +60,11 @@ const LPTokenHelpText: React.FC<{ bank: BankEntity }> = ({ bank }) => {
   let pairName: string;
   let uniswapUrl: string;
   if (bank.depositTokenName.includes('KBTC')) {
-    pairName = 'KBTC-DAI pair';
-    uniswapUrl = 'https://app.uniswap.org/#/add/0x3449FC1Cd036255BA1EB19d65fF4BA2b8903A69a/0x6B175474E89094C44Da98b954EedeAC495271d0F';
+    pairName = 'KBTC-WBTC pair';
+    uniswapUrl = `https://app.uniswap.org/#/add/${config.deployments["WBTC"].address}/${config.deployments["KBTC"].address}`;
   } else {
-    pairName = 'Klon-DAI pair';
-    uniswapUrl = 'https://app.uniswap.org/#/add/0xa7ED29B253D8B4E3109ce07c80fc570f81B63696/0x6B175474E89094C44Da98b954EedeAC495271d0F';
+    pairName = 'Klon-WBTC pair';
+    uniswapUrl = `https://app.uniswap.org/#/add/${config.deployments["WBTC"].address}/${config.deployments["Klon"].address}`;
   }
   return (
     <StyledLink href={uniswapUrl} target="_blank">
