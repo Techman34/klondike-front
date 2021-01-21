@@ -61,10 +61,10 @@ const LPTokenHelpText: React.FC<{ bank: BankEntity }> = ({ bank }) => {
   let uniswapUrl: string;
   if (bank.depositTokenName.includes('KBTC')) {
     pairName = 'KBTC-WBTC pair';
-    uniswapUrl = `https://app.uniswap.org/#/add/${config.deployments["WBTC"].address}/${config.deployments["KBTC"].address}`;
+    uniswapUrl = `https://app.uniswap.org/#/add/${config.deployments["KBTC"].address}/${config.deployments["WBTC"].address}`;
   } else {
     pairName = 'Klon-WBTC pair';
-    uniswapUrl = `https://app.uniswap.org/#/add/${config.deployments["WBTC"].address}/${config.deployments["Klon"].address}`;
+    uniswapUrl = `https://app.uniswap.org/#/add/${config.deployments["Klon"].address}/${config.deployments["WBTC"].address}`;
   }
   return (
     <StyledLink href={uniswapUrl} target="_blank">
