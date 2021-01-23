@@ -124,7 +124,7 @@ const Bond: React.FC = () => {
                   priceDesc={`${getDisplayBalance(bondBalance)} KBond Available`}
                   onExchange={handleRedeemBonds}
                   disabled={!bondStat || bondBalance.eq(0) || !isBondRedeemable}
-                  disabledDescription={!isBondRedeemable ? `Enabled when KBTC > $${BOND_REDEEM_PRICE}` : null}
+                  disabledDescription={!isBondRedeemable ? `Enabled when KBTC > ₿${BOND_REDEEM_PRICE}` : null}
                 />
               </StyledCardWrapper>
             </StyledBond>
