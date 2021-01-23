@@ -19,9 +19,10 @@ import { Bank } from '../../../basis-cash';
 
 interface HarvestProps {
   bank: Bank;
+  precision?: number;
 }
 
-const Harvest: React.FC<HarvestProps> = ({ bank }) => {
+const Harvest: React.FC<HarvestProps> = ({ bank, precision = 8 }) => {
   const earnings = useEarnings(bank.contract);
   const { onReward } = useHarvest(bank);
 
@@ -34,7 +35,7 @@ const Harvest: React.FC<HarvestProps> = ({ bank }) => {
             <CardIcon>
               <TokenSymbol symbol={bank.earnToken.symbol} />
             </CardIcon>
-            <Value value={getDisplayBalance(earnings)} />
+            <Value value={getDisplayBalance(earnings, 18, precision)} />
             <Label text={`${tokenName} Earned`} />
           </StyledCardHeader>
           <StyledCardActions>

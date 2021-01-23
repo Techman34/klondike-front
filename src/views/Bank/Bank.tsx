@@ -18,6 +18,7 @@ const Bank: React.FC = () => {
   useEffect(() => window.scrollTo(0, 0));
 
   const { bankId } = useParams();
+  const precision = bankId.includes("LPToken") ? 10 : 8;
   const bank = useBank(bankId);
 
   const { account } = useWallet();
@@ -33,11 +34,11 @@ const Bank: React.FC = () => {
       <StyledBank>
         <StyledCardsWrapper>
           <StyledCardWrapper>
-            <Harvest bank={bank} />
+            <Harvest bank={bank} precision={precision} />
           </StyledCardWrapper>
           <Spacer />
           <StyledCardWrapper>
-            <Stake bank={bank} />
+            <Stake bank={bank} precision={precision}/>
           </StyledCardWrapper>
         </StyledCardsWrapper>
         <Spacer size="lg" />
@@ -115,7 +116,7 @@ const StyledLink = styled.a`
 
 const StyledCardsWrapper = styled.div`
   display: flex;
-  width: 600px;
+  width: 800px;
   @media (max-width: 768px) {
     width: 100%;
     flex-flow: column nowrap;

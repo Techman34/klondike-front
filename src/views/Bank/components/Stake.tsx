@@ -26,9 +26,10 @@ import { Bank } from '../../../basis-cash';
 
 interface StakeProps {
   bank: Bank;
+  precision?: number;
 }
 
-const Stake: React.FC<StakeProps> = ({ bank }) => {
+const Stake: React.FC<StakeProps> = ({ bank, precision = 8 }) => {
   const [approveStatus, approve] = useApprove(bank.depositToken, bank.address);
 
   // TODO: reactive update of token balance
@@ -70,7 +71,7 @@ const Stake: React.FC<StakeProps> = ({ bank }) => {
             <CardIcon>
               <TokenSymbol symbol={bank.depositToken.symbol} size={54} />
             </CardIcon>
-            <Value value={getDisplayBalance(stakedBalance, bank.depositToken.decimal)} />
+            <Value value={getDisplayBalance(stakedBalance, bank.depositToken.decimal, precision)} />
             <Label text={`${bank.depositTokenName} Staked`} />
           </StyledCardHeader>
           <StyledCardActions>
