@@ -92,10 +92,10 @@ const Bond: React.FC = () => {
                   toTokenName="KBond"
                   priceDesc={
                     !isBondPurchasable
-                      ? 'KBTC is over $1'
+                      ? 'KBTC is over ₿1'
                       : `${Math.floor(
                         100 / Number(bondStat.priceInDAI) - 100,
-                      )}% return when KBTC > $1`
+                      )}% return when KBTC > ₿1`
                   }
                   onExchange={handleBuyBonds}
                   disabled={!bondStat || isBondRedeemable}
