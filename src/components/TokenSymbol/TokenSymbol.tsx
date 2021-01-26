@@ -10,7 +10,7 @@ const logosBySymbol: { [title: string]: string } = {
   'KBond': babLogo,
   'Klon': basLogo,
   'WBTC': wbtcLogo,
-  'TBTC': wbtcLogo,
+  'BDIGG': wbtcLogo,
   'RenBTC': wbtcLogo,
   'KBTC_WBTC-LPv2': bacLogo,
   'Klon_WBTC-LPv2': basLogo,

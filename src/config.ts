@@ -17,9 +17,9 @@ const devConfig: Configuration = {
   externalTokens: {
     WBTC: [deployments["WBTC"].address, 8],
     RenBTC: [deployments["RenBTC"].address, 8],
-    TBTC: [deployments["TBTC"].address, 18],
-    'KBTC_WBTC-LPv2': ['0x4578DbB874f181eafe5EeF8fE3F8272a36d5856a', 18],
-    'Klon_WBTC-LPv2': ['0xCf569bDad58dEDBFf5209362Da22d578E6df0cBf', 18],
+    BDIGG: [deployments["BDIGG"].address, 18],
+    'KBTC_WBTC-LPv2': ['0xF0e994739599761b8b484f53Ea8C126AD76EE32a', 18],
+    'Klon_WBTC-LPv2': ['0x1BfF09885B204BC4BE27cad492F6089c99bAa656', 18],
   },
   baseLaunchDate: new Date('2020-11-26T00:00:00Z'),
   bondLaunchesAt: new Date('2020-12-03T15:00:00Z'),
@@ -57,10 +57,10 @@ export const bankDefinitions: { [contractName: string]: BankInfo } = {
     finished: false,
     sort: 4,
   },
-  KBTCTBTCPool: {
-    name: 'Earn KBTC by TBTC',
-    contract: 'KBTCTBTCPool',
-    depositTokenName: 'TBTC',
+  KBTCBDIGGPool: {
+    name: 'Earn KBTC by BDIGG',
+    contract: 'KBTCBDIGGPool',
+    depositTokenName: 'BDIGG',
     earnTokenName: 'KBTC',
     finished: false,
     sort: 5,
