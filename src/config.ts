@@ -5,10 +5,11 @@ import { formatUnits } from 'ethers/lib/utils';
 import { BigNumber } from 'ethers';
 
 const network = process.env.REACT_APP_NETWORK;
-const defaultProvider = `https://${network}.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
+// const keys = [process.env.REACT_APP_INFURA_KEY, process.env.REACT_APP_INFURA_KEY_2, process.env.REACT_APP_INFURA_KEY_3];
+const defaultProvider = `https://eth-mainnet.alchemyapi.io/v2/${process.env.REACT_APP_INFURA_KEY}`;
 const chainId = network === "mainnet" ? ChainId.MAINNET : ChainId.KOVAN
 const deployments = require(`./basis-cash/deployments/deployments.${network}.json`);
-const etherscanUrl = `https://${network}.etherscan.io`;
+const etherscanUrl = network === "mainnet" ? "https://etherscan.io" : `https://${network}.etherscan.io`;
 const devConfig: Configuration = {
   chainId,
   etherscanUrl,
