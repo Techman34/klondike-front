@@ -41,14 +41,14 @@ const Boardroom: React.FC = () => {
   const { prevAllocation, nextAllocation } = useTreasuryAllocationTimes();
 
   const prevEpoch = useMemo(
-    () =>
-      nextAllocation.getTime() <= Date.now()
-        ? moment().utc().startOf('day').toDate()
-        : prevAllocation,
+    () => {
+      const thisDateAlloc = moment().utc().startOf('day').add(18, 'hours');
+      if (thisDateAlloc.toDate() < new Date()) { return thisDateAlloc.toDate() }
+      return thisDateAlloc.subtract(1, 'days').toDate();
+    },
     [prevAllocation, nextAllocation],
   );
   const nextEpoch = useMemo(() => moment(prevEpoch).add(1, 'days').toDate(), [prevEpoch]);
-
   const boardroomVersion = useBoardroomVersion();
   const usingOldBoardroom = boardroomVersion !== 'latest';
   const migrateNotice = useMemo(() => {

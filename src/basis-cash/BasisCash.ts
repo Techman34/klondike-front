@@ -113,8 +113,8 @@ export class BasisCash {
     const { Oracle } = this.contracts;
 
     const totalSupply = await this.KBTC.displayedTotalSupply();
-    const wbtcAddress = this.config.deployments["WBTC"].address;
-    const kbtcAddress = this.config.deployments["KBTC"].address;
+    const wbtcAddress = this.config.deployments['WBTC'].address;
+    const kbtcAddress = this.config.deployments['KBTC'].address;
     const num = BigNumber.from(wbtcAddress).lt(BigNumber.from(kbtcAddress)) ? 1 : 0;
     const priceCumulativeLast = `price${num}CumulativeLast`;
     const priceAverage = `price${num}Average`;
@@ -205,7 +205,10 @@ export class BasisCash {
    */
   async buyKbonds(amount: string | number): Promise<TransactionResponse> {
     const { Treasury } = this.contracts;
-    return await Treasury.buyKbonds(decimalToBalance(amount), await this.getKbondOraclePriceInLastTWAP());
+    return await Treasury.buyKbonds(
+      decimalToBalance(amount),
+      await this.getKbondOraclePriceInLastTWAP(),
+    );
   }
 
   /**
@@ -214,7 +217,10 @@ export class BasisCash {
    */
   async redeemKbonds(amount: string): Promise<TransactionResponse> {
     const { Treasury } = this.contracts;
-    return await Treasury.redeemKbonds(decimalToBalance(amount), await this.getKbondOraclePriceInLastTWAP());
+    return await Treasury.redeemKbonds(
+      decimalToBalance(amount),
+      await this.getKbondOraclePriceInLastTWAP(),
+    );
   }
 
   async earnedFromBank(poolName: ContractName, account = this.myAccount): Promise<BigNumber> {
@@ -324,7 +330,9 @@ export class BasisCash {
 
   async stakeShareToBoardroom(amount: string): Promise<TransactionResponse> {
     if (this.isOldBoardroomMember()) {
-      throw new Error("you're using old Boardroom. please withdraw and deposit the Klon again.");
+      throw new Error(
+        "you're using old Boardroom. please withdraw and deposit the Klon again.",
+      );
     }
     const Boardroom = this.currentBoardroom();
     return await Boardroom.stake(decimalToBalance(amount));
